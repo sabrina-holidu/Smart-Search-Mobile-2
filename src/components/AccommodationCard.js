@@ -39,11 +39,8 @@ const AccommodationCard = ({ accommodation }) => {
         
         {/* Heart Icon */}
         <div className="absolute top-3 right-3 w-6 h-6">
-          <svg viewBox="0 0 24 24" fill="none">
-            <path 
-              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" 
-              fill="white"
-            />
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fillRule="evenodd" clipRule="evenodd" d="M19.6602 3.98968C17.0202 2.18968 13.7602 3.02968 12.0002 5.08968C10.2402 3.02968 6.98021 2.17968 4.34021 3.98968C2.94021 4.94968 2.06021 6.56968 2.00021 8.27968C1.86021 12.1597 5.30021 15.2697 10.5502 20.0397L10.6502 20.1297C11.4102 20.8197 12.5802 20.8197 13.3402 20.1197L13.4502 20.0197C18.7002 15.2597 22.1302 12.1497 22.0002 8.26968C21.9402 6.56968 21.0602 4.94968 19.6602 3.98968ZM12.1002 18.5497L12.0002 18.6497L11.9002 18.5497C7.14021 14.2397 4.00021 11.3897 4.00021 8.49968C4.00021 6.49968 5.50021 4.99968 7.50021 4.99968C8.52688 4.99968 9.71688 5.78634 11.0702 7.35968L12.0002 8.35108L12.9402 7.35968C14.2869 5.78634 15.4735 4.99968 16.5002 4.99968C18.5002 4.99968 20.0002 6.49968 20.0002 8.49968C20.0002 11.3897 16.8602 14.2397 12.1002 18.5497Z" fill="white"/>
           </svg>
         </div>
         
@@ -68,8 +65,8 @@ const AccommodationCard = ({ accommodation }) => {
         {accommodation.rating && (
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              <div className="w-4 h-4">
-                <svg viewBox="0 0 16 16" fill="none">
+              <div className="w-4 h-4 text-yellow-500">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8 0l2.5 5.5L16 6.5l-4 4 1 5.5L8 14l-5 2.5 1-5.5L0 6.5l5.5-1L8 0z" fill="#FFD700"/>
                 </svg>
               </div>

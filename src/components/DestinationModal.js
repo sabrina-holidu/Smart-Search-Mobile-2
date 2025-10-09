@@ -71,8 +71,8 @@ const DestinationModal = ({ isOpen, onClose, onSelectDestination }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl w-full max-w-md mx-4 max-h-[80vh] flex flex-col">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-start justify-center z-50 pt-4">
+      <div className="bg-white rounded-2xl max-w-sm mx-auto bg-white shadow-lg overflow-hidden flex flex-col w-full mx-4">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-semibold text-gray-800">Search destinations</h2>
@@ -80,7 +80,7 @@ const DestinationModal = ({ isOpen, onClose, onSelectDestination }) => {
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
           >
-            <svg viewBox="0 0 24 24" fill="none" className="w-5 h-5">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M18 6L6 18M6 6l12 12" stroke="#605C57" strokeWidth="2" strokeLinecap="round"/>
             </svg>
           </button>
@@ -90,7 +90,7 @@ const DestinationModal = ({ isOpen, onClose, onSelectDestination }) => {
         <div className="p-4 border-b border-gray-200">
           <div className="relative">
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-              <svg viewBox="0 0 20 20" fill="none" className="w-5 h-5">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M19 19l-4.35-4.35M17 9A8 8 0 1 1 1 9a8 8 0 0 1 16 0z" stroke="#605C57" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
