@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import DestinationModal from './DestinationModal';
-import SearchCriteriaModal from './SearchCriteriaModal';
+import FilterModal from './FilterModal';
 
-const SmartSearch = () => {
+const SmartSearch = ({ onKeywordCountChange, onDestinationChange, onGuestCountChange, onLocationDetected }) => {
   const [isDestinationModalOpen, setIsDestinationModalOpen] = useState(false);
-  const [isCriteriaModalOpen, setIsCriteriaModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState(null);
-  const [selectedCriteria, setSelectedCriteria] = useState(null);
+  const [searchCriteria, setSearchCriteria] = useState(null);
 
   const handleDestinationClick = () => {
     setIsDestinationModalOpen(true);
@@ -14,6 +14,9 @@ const SmartSearch = () => {
 
   const handleDestinationSelect = (destination) => {
     setSelectedDestination(destination);
+    if (onDestinationChange) {
+      onDestinationChange(destination.name);
+    }
   };
 
   const handleDestinationModalClose = () => {
@@ -21,15 +24,43 @@ const SmartSearch = () => {
   };
 
   const handleCriteriaClick = () => {
-    setIsCriteriaModalOpen(true);
+    setIsFilterModalOpen(true);
   };
 
-  const handleCriteriaSelect = (criteria) => {
-    setSelectedCriteria(criteria);
+  // const handleCriteriaSelect = (criteria) => {
+  //   setSelectedCriteria(criteria);
+  // };
+
+  const handleFilterModalClose = () => {
+    setIsFilterModalOpen(false);
   };
 
-  const handleCriteriaModalClose = () => {
-    setIsCriteriaModalOpen(false);
+
+  const handleApplyFilters = (filters) => {
+    // Handle the applied filters
+    console.log('Applied filters:', filters);
+    setSearchCriteria(filters.searchTerm);
+  };
+
+
+  const handleKeywordCountChange = (keywordCount, guestCount) => {
+    if (onKeywordCountChange) {
+      onKeywordCountChange(keywordCount);
+    }
+    if (onGuestCountChange && guestCount) {
+      onGuestCountChange(guestCount);
+    }
+  };
+
+  const handleLocationDetected = (location) => {
+    if (onLocationDetected) {
+      onLocationDetected(location);
+    }
+    // Also update the selected destination
+    setSelectedDestination(location);
+    if (onDestinationChange) {
+      onDestinationChange(location.name);
+    }
   };
 
   return (
@@ -75,11 +106,11 @@ const SmartSearch = () => {
             <path d="M19 19l-4.35-4.35M17 9A8 8 0 1 1 1 9a8 8 0 0 1 16 0z" stroke="#605C57" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
-        <div className="flex-1">
-          <span className={`font-medium ${selectedCriteria ? 'text-gray-800' : 'text-gray-700'}`}>
-            {selectedCriteria ? selectedCriteria.name : "Tell us what you're looking for"}
-          </span>
-        </div>
+              <div className="flex-1">
+                <span className={`font-medium ${searchCriteria ? 'text-gray-800' : 'text-gray-700'}`}>
+                  {searchCriteria || "Tell us what you're looking for"}
+                </span>
+              </div>
         <div className="w-4 h-4 text-gray-600">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 6l4 4 4-4" stroke="#605C57" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -101,12 +132,15 @@ const SmartSearch = () => {
         onSelectDestination={handleDestinationSelect}
       />
 
-      {/* Search Criteria Modal */}
-      <SearchCriteriaModal
-        isOpen={isCriteriaModalOpen}
-        onClose={handleCriteriaModalClose}
-        onSelectCriteria={handleCriteriaSelect}
-      />
+      {/* Filter Modal */}
+        <FilterModal
+          isOpen={isFilterModalOpen}
+          onClose={handleFilterModalClose}
+          onApplyFilters={handleApplyFilters}
+          onKeywordCountChange={handleKeywordCountChange}
+          onLocationDetected={handleLocationDetected}
+        />
+
     </div>
   );
 };

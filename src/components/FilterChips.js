@@ -1,8 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
+import FiltersModal from './FiltersModal';
 
-const FilterChips = () => {
+const FilterChips = ({ keywordCount = 0, guestCount = null }) => {
+  const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
+
+  const handleFiltersClick = () => {
+    setIsFiltersModalOpen(true);
+  };
+
+  const handleFiltersModalClose = () => {
+    setIsFiltersModalOpen(false);
+  };
+
+  const handleApplyFilters = (filters) => {
+    console.log('Applied filters:', filters);
+    setIsFiltersModalOpen(false);
+  };
+
   return (
-    <div className="flex gap-2">
+    <>
+      <div className="flex gap-2">
       {/* Guests Chip */}
       <div className="bg-white border border-gray-300 rounded-full px-4 py-2 flex items-center gap-2">
         <div className="w-5 h-5 text-gray-800">
@@ -13,7 +30,9 @@ const FilterChips = () => {
             <path d="M16.9443 15.833H13C13.213 15.4163 13.3332 14.9442 13.3332 14.4441V14.1663H16.6665C16.6665 12.3254 15.1741 10.833 13.3332 10.833C13.0457 10.833 12.7668 10.8694 12.5007 10.9378C12.2152 10.423 11.8635 9.94998 11.4572 9.53019C12.0365 9.29555 12.6697 9.16634 13.3332 9.16634C16.0946 9.16634 18.3332 11.4049 18.3332 14.1663V14.4441C18.3332 15.2112 17.7113 15.833 16.9443 15.833Z" fill="#2B2926"/>
           </svg>
         </div>
-        <span className="text-sm font-medium text-gray-800">Guests</span>
+        <span className="text-sm font-medium text-gray-800">
+          {guestCount ? `${guestCount} Guest${guestCount > 1 ? 's' : ''}` : 'Guests'}
+        </span>
       </div>
       
       {/* Dates Chip */}
@@ -30,7 +49,10 @@ const FilterChips = () => {
       </div>
       
       {/* Filters Chip */}
-      <div className="bg-white border border-gray-300 rounded-full px-4 py-2 flex items-center gap-2">
+      <div 
+        className="bg-white border border-gray-300 rounded-full px-4 py-2 flex items-center gap-2 relative cursor-pointer hover:bg-gray-50"
+        onClick={handleFiltersClick}
+      >
         <div className="w-5 h-5 text-gray-800">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule="evenodd" clipRule="evenodd" d="M15.7126 5.83333H16.6667C17.125 5.83333 17.5 6.20833 17.5 6.66667C17.5 7.12501 17.125 7.5 16.6667 7.5L15.7124 7.50045C15.3537 8.70501 14.2378 9.58333 12.9167 9.58333C11.5957 9.58333 10.4798 8.70513 10.121 7.50071L3.33333 7.5C2.875 7.5 2.5 7.12501 2.5 6.66667C2.5 6.20833 2.875 5.83333 3.33333 5.83333H10.1208C10.4793 4.62855 11.5954 3.75 12.9167 3.75C14.2379 3.75 15.354 4.62855 15.7126 5.83333ZM11.9521 7.46178C11.7738 7.24571 11.6667 6.9687 11.6667 6.66667C11.6667 6.34652 11.787 6.05448 11.985 5.83333C12.2138 5.5776 12.5465 5.41667 12.9167 5.41667C13.2869 5.41667 13.6195 5.5776 13.8484 5.83333C13.8596 5.84585 13.8705 5.85859 13.8812 5.87155C14.0595 6.08762 14.1667 6.36464 14.1667 6.66667C14.1667 6.98725 14.046 7.27964 13.8476 7.5009C13.6187 7.75611 13.2864 7.91667 12.9167 7.91667C12.5283 7.91667 12.1814 7.73959 11.9521 7.46178Z" fill="#2B2926"/>
@@ -38,8 +60,23 @@ const FilterChips = () => {
           </svg>
         </div>
         <span className="text-sm font-medium text-gray-800">Filters</span>
+        
+        {/* Blue bubble indicator */}
+        {keywordCount > 0 && (
+          <div className="absolute -top-1 -right-1 bg-[#00809d] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+            {keywordCount}
+          </div>
+        )}
       </div>
-    </div>
+      </div>
+
+      {/* Filters Modal */}
+      <FiltersModal
+        isOpen={isFiltersModalOpen}
+        onClose={handleFiltersModalClose}
+        onApplyFilters={handleApplyFilters}
+      />
+    </>
   );
 };
 
