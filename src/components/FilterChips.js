@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import FiltersModal from './FiltersModal';
+import GuestsModal from './GuestsModal';
 
 const FilterChips = ({ keywordCount = 0, guestCount = null }) => {
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
+  const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false);
+  const [guests, setGuests] = useState({ adults: 0, children: 0, bedrooms: 0, pets: false });
 
   const handleFiltersClick = () => {
     setIsFiltersModalOpen(true);
@@ -17,11 +20,28 @@ const FilterChips = ({ keywordCount = 0, guestCount = null }) => {
     setIsFiltersModalOpen(false);
   };
 
+  const handleGuestsClick = () => {
+    setIsGuestsModalOpen(true);
+  };
+
+  const handleGuestsModalClose = () => {
+    setIsGuestsModalOpen(false);
+  };
+
+  const handleApplyGuests = (newGuests) => {
+    setGuests(newGuests);
+    console.log('Applied guests:', newGuests);
+    setIsGuestsModalOpen(false);
+  };
+
   return (
     <>
       <div className="flex gap-2">
       {/* Guests Chip */}
-      <div className="bg-white border border-gray-300 rounded-full px-4 py-2 flex items-center gap-2">
+      <div 
+        className="bg-white border border-gray-300 rounded-full px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-gray-50"
+        onClick={handleGuestsClick}
+      >
         <div className="w-5 h-5 text-gray-800">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule="evenodd" clipRule="evenodd" d="M6.6665 3.33301C5.28579 3.33301 4.1665 4.4523 4.1665 5.83301C4.1665 7.21372 5.28579 8.33301 6.6665 8.33301C8.04722 8.33301 9.1665 7.21372 9.1665 5.83301C9.1665 4.4523 8.04722 3.33301 6.6665 3.33301ZM5.83317 5.83301C5.83317 5.37277 6.20627 4.99967 6.6665 4.99967C7.12674 4.99967 7.49984 5.37277 7.49984 5.83301C7.49984 6.29325 7.12674 6.66634 6.6665 6.66634C6.20627 6.66634 5.83317 6.29325 5.83317 5.83301Z" fill="#2B2926"/>
@@ -31,7 +51,7 @@ const FilterChips = ({ keywordCount = 0, guestCount = null }) => {
           </svg>
         </div>
         <span className="text-sm font-medium text-gray-800">
-          {guestCount ? `${guestCount} Guest${guestCount > 1 ? 's' : ''}` : 'Guests'}
+          {guests.adults + guests.children > 0 ? `${guests.adults + guests.children} Guest${guests.adults + guests.children > 1 ? 's' : ''}` : 'Guests'}
         </span>
       </div>
       
@@ -75,6 +95,14 @@ const FilterChips = ({ keywordCount = 0, guestCount = null }) => {
         isOpen={isFiltersModalOpen}
         onClose={handleFiltersModalClose}
         onApplyFilters={handleApplyFilters}
+      />
+
+      {/* Guests Modal */}
+      <GuestsModal
+        isOpen={isGuestsModalOpen}
+        onClose={handleGuestsModalClose}
+        onApplyGuests={handleApplyGuests}
+        initialGuests={guests}
       />
     </>
   );
