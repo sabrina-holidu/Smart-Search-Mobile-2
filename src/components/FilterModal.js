@@ -113,7 +113,7 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, onKeywordCountChange, on
 
   // Function to extract keywords from text (excluding guest-related keywords)
   const extractKeywords = (text) => {
-    const foundKeywords = [];
+    const foundKeywordsSet = new Set(); // Use Set to prevent duplicates
     const lowerText = text.toLowerCase();
     
     // Keywords to exclude from filter count
@@ -136,12 +136,17 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, onKeywordCountChange, on
     
     keywords.forEach(keyword => {
       const lowerKeyword = keyword.toLowerCase();
-      if (lowerText.includes(lowerKeyword) && !excludedKeywords.includes(lowerKeyword)) {
-        foundKeywords.push(keyword);
+      
+      // Use word boundary regex to match complete words only
+      // This prevents "spa" from matching in "spain"
+      const regex = new RegExp(`\\b${lowerKeyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i');
+      
+      if (regex.test(lowerText) && !excludedKeywords.includes(lowerKeyword)) {
+        foundKeywordsSet.add(keyword);
       }
     });
     
-    return foundKeywords;
+    return Array.from(foundKeywordsSet);
   };
 
   const extractGuestCount = (text) => {
@@ -430,9 +435,27 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, onKeywordCountChange, on
               </p>
             </div>
 
-            {/* Keyword Pills */}
-            {extractedKeywords.length > 0 && (
+            {/* Chips Container */}
+            {(extractedKeywords.length > 0 || guestCount || searchTerm) && (
               <div className="flex flex-wrap gap-2 w-full">
+                {/* Guest Chip */}
+                {guestCount && (
+                  <div className="bg-[#00809d] text-white px-3 py-1.5 rounded-full flex items-center text-sm font-medium">
+                    <span>{guestCount.total} Guest{guestCount.total > 1 ? 's' : ''}</span>
+                  </div>
+                )}
+
+                {/* Location Chip (if detected) */}
+                {(() => {
+                  const location = extractLocation(searchTerm);
+                  return location ? (
+                    <div className="bg-[#00809d] text-white px-3 py-1.5 rounded-full flex items-center text-sm font-medium">
+                      <span>{location.name}</span>
+                    </div>
+                  ) : null;
+                })()}
+
+                {/* Keyword Pills */}
                 {extractedKeywords.map((keyword, index) => (
                   <div
                     key={index}
