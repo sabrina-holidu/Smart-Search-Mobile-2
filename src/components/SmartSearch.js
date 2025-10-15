@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import DestinationModal from './DestinationModal';
 import FilterModal from './FilterModal';
 
-const SmartSearch = ({ onKeywordCountChange, onDestinationChange, onGuestCountChange, onLocationDetected }) => {
+const SmartSearch = ({ onKeywordCountChange, onDestinationChange, onGuestCountChange, onLocationDetected, onKeywordsExtracted }) => {
   const [isDestinationModalOpen, setIsDestinationModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [selectedDestination, setSelectedDestination] = useState(null);
@@ -43,12 +43,16 @@ const SmartSearch = ({ onKeywordCountChange, onDestinationChange, onGuestCountCh
   };
 
 
-  const handleKeywordCountChange = (keywordCount, guestCount) => {
+  const handleKeywordCountChange = (keywordCount, guestCount, extractedKeywords) => {
     if (onKeywordCountChange) {
       onKeywordCountChange(keywordCount);
     }
     if (onGuestCountChange && guestCount) {
+      // guestCount is now an object: { adults: X, children: Y, total: Z }
       onGuestCountChange(guestCount);
+    }
+    if (onKeywordsExtracted && extractedKeywords && extractedKeywords.length > 0) {
+      onKeywordsExtracted(extractedKeywords);
     }
   };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Navbar from './Navbar';
 import SmartSearch from './SmartSearch';
 import SearchResults from './SearchResults';
@@ -6,6 +6,32 @@ import FilterChips from './FilterChips';
 import MapSection from './MapSection';
 
 const Home: React.FC = () => {
+  const [keywordCount, setKeywordCount] = useState(0);
+  const [guestCount, setGuestCount] = useState<number | null>(null);
+  const [extractedKeywords, setExtractedKeywords] = useState<string[]>([]);
+  const [destination, setDestination] = useState<string | null>(null);
+  const [detectedLocation, setDetectedLocation] = useState<any>(null);
+
+  const handleKeywordCountChange = (count: number) => {
+    setKeywordCount(count);
+  };
+
+  const handleGuestCountChange = (count: number) => {
+    setGuestCount(count);
+  };
+
+  const handleKeywordsExtracted = (keywords: string[]) => {
+    setExtractedKeywords(keywords);
+  };
+
+  const handleDestinationChange = (dest: string) => {
+    setDestination(dest);
+  };
+
+  const handleLocationDetected = (location: any) => {
+    setDetectedLocation(location);
+  };
+
   return (
     <div className="bg-petrol min-h-screen">
       <div className="max-w-sm mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -14,12 +40,22 @@ const Home: React.FC = () => {
         
         {/* Smart Search Component */}
         <div className="px-4 pt-4">
-          <SmartSearch />
+          <SmartSearch 
+            onKeywordCountChange={handleKeywordCountChange}
+            onGuestCountChange={handleGuestCountChange}
+            onKeywordsExtracted={handleKeywordsExtracted}
+            onDestinationChange={handleDestinationChange}
+            onLocationDetected={handleLocationDetected}
+          />
         </div>
         
         {/* Filter Chips */}
         <div className="px-4 py-4">
-          <FilterChips />
+          <FilterChips 
+            keywordCount={keywordCount}
+            guestCount={guestCount}
+            extractedKeywords={extractedKeywords}
+          />
         </div>
         
         {/* Search Results Header */}

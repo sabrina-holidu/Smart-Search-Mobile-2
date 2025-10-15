@@ -8,7 +8,8 @@ import MapSection from './MapSection';
 const Home = () => {
   const [keywordCount, setKeywordCount] = useState(0);
   const [selectedDestination, setSelectedDestination] = useState(null);
-  const [guestCount, setGuestCount] = useState(null);
+  const [guestCount, setGuestCount] = useState(null); // Will be { adults: X, children: Y, total: Z }
+  const [extractedKeywords, setExtractedKeywords] = useState([]);
 
   const getLocationCount = (destination) => {
     const locationCounts = {
@@ -18,6 +19,11 @@ const Home = () => {
     };
     return locationCounts[destination] || 239;
   };
+
+  const handleKeywordsExtracted = (keywords) => {
+    setExtractedKeywords(keywords);
+  };
+
   return (
     <div className="bg-white min-h-screen">
       <div className="max-w-sm mx-auto bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -30,6 +36,7 @@ const Home = () => {
             onKeywordCountChange={setKeywordCount} 
             onDestinationChange={setSelectedDestination}
             onGuestCountChange={setGuestCount}
+            onKeywordsExtracted={handleKeywordsExtracted}
             onLocationDetected={(location) => {
               setSelectedDestination(location.name);
             }}
@@ -40,7 +47,8 @@ const Home = () => {
         <div className="px-4 py-4">
           <FilterChips 
             keywordCount={keywordCount} 
-            guestCount={guestCount} 
+            guestCount={guestCount}
+            extractedKeywords={extractedKeywords}
           />
         </div>
         

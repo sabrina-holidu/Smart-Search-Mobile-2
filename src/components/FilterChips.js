@@ -1,11 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FiltersModal from './FiltersModal';
 import GuestsModal from './GuestsModal';
 
-const FilterChips = ({ keywordCount = 0, guestCount = null }) => {
+const FilterChips = ({ keywordCount = 0, guestCount = null, extractedKeywords = [] }) => {
   const [isFiltersModalOpen, setIsFiltersModalOpen] = useState(false);
   const [isGuestsModalOpen, setIsGuestsModalOpen] = useState(false);
   const [guests, setGuests] = useState({ adults: 0, children: 0, bedrooms: 0, pets: false });
+
+  // Update guests when guestCount changes from smart search
+  useEffect(() => {
+    if (guestCount !== null && guestCount.total > 0) {
+      // guestCount is now { adults: X, children: Y, total: Z }
+      setGuests(prev => ({
+        ...prev,
+        adults: guestCount.adults || 0,
+        children: guestCount.children || 0
+      }));
+    }
+  }, [guestCount]);
 
   const handleFiltersClick = () => {
     setIsFiltersModalOpen(true);
@@ -30,7 +42,6 @@ const FilterChips = ({ keywordCount = 0, guestCount = null }) => {
 
   const handleApplyGuests = (newGuests) => {
     setGuests(newGuests);
-    console.log('Applied guests:', newGuests);
     setIsGuestsModalOpen(false);
   };
 
@@ -51,7 +62,27 @@ const FilterChips = ({ keywordCount = 0, guestCount = null }) => {
           </svg>
         </div>
         <span className="text-sm font-medium text-gray-800">
-          {guests.adults + guests.children > 0 ? `${guests.adults + guests.children} Guest${guests.adults + guests.children > 1 ? 's' : ''}` : 'Guests'}
+          {(() => {
+            const totalGuests = guests.adults + guests.children;
+            if (totalGuests === 0) return 'Guests';
+            
+            // Show breakdown if we have both adults and children
+            if (guests.adults > 0 && guests.children > 0) {
+              return `${guests.adults} Adult${guests.adults > 1 ? 's' : ''}, ${guests.children} Child${guests.children > 1 ? 'ren' : ''}`;
+            }
+            
+            // Show only adults
+            if (guests.adults > 0) {
+              return `${guests.adults} Adult${guests.adults > 1 ? 's' : ''}`;
+            }
+            
+            // Show only children
+            if (guests.children > 0) {
+              return `${guests.children} Child${guests.children > 1 ? 'ren' : ''}`;
+            }
+            
+            return 'Guests';
+          })()}
         </span>
       </div>
       
@@ -95,6 +126,7 @@ const FilterChips = ({ keywordCount = 0, guestCount = null }) => {
         isOpen={isFiltersModalOpen}
         onClose={handleFiltersModalClose}
         onApplyFilters={handleApplyFilters}
+        extractedKeywords={extractedKeywords}
       />
 
       {/* Guests Modal */}

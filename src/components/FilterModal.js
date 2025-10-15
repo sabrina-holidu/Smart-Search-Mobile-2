@@ -147,41 +147,77 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, onKeywordCountChange, on
   const extractGuestCount = (text) => {
     const lowerText = text.toLowerCase();
     
-    // Patterns to match guest counts
-    const patterns = [
-      // "2 adults and 1 child" -> 3
-      /(\d+)\s*(?:adults?|adult)\s*(?:and|&|,)\s*(\d+)\s*(?:children?|child|kids?|kid)/i,
-      // "2 adults, 1 child" -> 3
-      /(\d+)\s*(?:adults?|adult),?\s*(\d+)\s*(?:children?|child|kids?|kid)/i,
-      // "3 people" -> 3
-      /(\d+)\s*(?:people|persons?|guests?|guest)/i,
-      // "2 adults" -> 2
-      /(\d+)\s*(?:adults?|adult)/i,
-      // "1 child" -> 1
-      /(\d+)\s*(?:children?|child|kids?|kid)/i,
-      // "couple" -> 2
-      /couple/i,
-      // "family" -> 4 (assume family of 4)
-      /family|families/i,
-      // "group of 5" -> 5
-      /group\s*(?:of\s*)?(\d+)/i,
-    ];
+    // Check for "X adults and Y children" pattern (with or without "and")
+    const adultsAndChildrenPattern = /(\d+)\s*(?:adults?|adult)\s*(?:and|&|,)?\s*(\d+)\s*(?:children?|child|kids?|kid)/i;
+    const adultsAndChildrenMatch = lowerText.match(adultsAndChildrenPattern);
+    if (adultsAndChildrenMatch) {
+      return {
+        adults: parseInt(adultsAndChildrenMatch[1]),
+        children: parseInt(adultsAndChildrenMatch[2]),
+        total: parseInt(adultsAndChildrenMatch[1]) + parseInt(adultsAndChildrenMatch[2])
+      };
+    }
 
-    for (const pattern of patterns) {
-      const match = lowerText.match(pattern);
-      if (match) {
-        if (pattern.source.includes('couple')) {
-          return 2;
-        } else if (pattern.source.includes('family')) {
-          return 4;
-        } else if (match[1] && match[2]) {
-          // Two numbers found (adults + children)
-          return parseInt(match[1]) + parseInt(match[2]);
-        } else if (match[1]) {
-          // Single number found
-          return parseInt(match[1]);
-        }
-      }
+    // Check for "X adults" pattern
+    const adultsPattern = /(\d+)\s*(?:adults?|adult)/i;
+    const adultsMatch = lowerText.match(adultsPattern);
+    if (adultsMatch) {
+      return {
+        adults: parseInt(adultsMatch[1]),
+        children: 0,
+        total: parseInt(adultsMatch[1])
+      };
+    }
+
+    // Check for "X children" pattern
+    const childrenPattern = /(\d+)\s*(?:children?|child|kids?|kid)/i;
+    const childrenMatch = lowerText.match(childrenPattern);
+    if (childrenMatch) {
+      return {
+        adults: 0,
+        children: parseInt(childrenMatch[1]),
+        total: parseInt(childrenMatch[1])
+      };
+    }
+
+    // Check for "X people/guests" pattern - assume all adults
+    const peoplePattern = /(\d+)\s*(?:people|persons?|guests?|guest)/i;
+    const peopleMatch = lowerText.match(peoplePattern);
+    if (peopleMatch) {
+      return {
+        adults: parseInt(peopleMatch[1]),
+        children: 0,
+        total: parseInt(peopleMatch[1])
+      };
+    }
+
+    // Check for "couple" - 2 adults
+    if (lowerText.includes('couple')) {
+      return {
+        adults: 2,
+        children: 0,
+        total: 2
+      };
+    }
+
+    // Check for "family" - 2 adults + 2 children
+    if (lowerText.includes('family') || lowerText.includes('families')) {
+      return {
+        adults: 2,
+        children: 2,
+        total: 4
+      };
+    }
+
+    // Check for "group of X"
+    const groupPattern = /group\s*(?:of\s*)?(\d+)/i;
+    const groupMatch = lowerText.match(groupPattern);
+    if (groupMatch) {
+      return {
+        adults: parseInt(groupMatch[1]),
+        children: 0,
+        total: parseInt(groupMatch[1])
+      };
     }
     
     return null;
@@ -287,23 +323,18 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, onKeywordCountChange, on
 
   const handleCheckmarkClick = () => {
     if (searchTerm.trim()) {
-      console.log('Original text:', searchTerm);
       const highlighted = highlightKeywords(searchTerm);
       const extracted = extractKeywords(searchTerm);
       const guestCount = extractGuestCount(searchTerm);
       const detectedLocation = extractLocation(searchTerm);
-      console.log('Highlighted text:', highlighted);
-      console.log('Extracted keywords:', extracted);
-      console.log('Guest count:', guestCount);
-      console.log('Detected location:', detectedLocation);
       setHighlightedText(highlighted);
       setExtractedKeywords(extracted);
       setGuestCount(guestCount);
       setIsHighlighted(true);
       
-      // Notify parent component about keyword count, guest count, and location
+      // Notify parent component about keyword count, guest count, extracted keywords, and location
       if (onKeywordCountChange) {
-        onKeywordCountChange(extracted.length, guestCount);
+        onKeywordCountChange(extracted.length, guestCount, extracted);
       }
       if (onLocationDetected && detectedLocation) {
         onLocationDetected(detectedLocation);
@@ -392,11 +423,7 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, onKeywordCountChange, on
             {/* Title with Shine Icon */}
             <div className="content-stretch flex gap-2 items-center relative shrink-0 w-full">
               <div className="relative shrink-0 w-6 h-6">
-                <div className="absolute inset-1">
-                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10 2L2 6l8 4 8-4-8-4zM2 14l8 4 8-4M2 10l8 4 8-4" stroke="#2B2926" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </div>
+                <img src={require('../icons/ai.jpg')} alt="AI" className="w-full h-full" />
               </div>
               <p className="basis-0 font-bold grow leading-6 min-h-px min-w-px not-italic relative shrink-0 text-[#2b2926] text-base">
                 Tell us what you're looking for

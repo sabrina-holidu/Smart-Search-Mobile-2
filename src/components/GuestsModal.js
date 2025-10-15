@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const GuestsModal = ({ isOpen, onClose, onApplyGuests, initialGuests = { adults: 0, children: 0, bedrooms: 0, pets: false } }) => {
   const [guests, setGuests] = useState(initialGuests);
+
+  // Update guests when initialGuests changes (e.g., from smart search)
+  useEffect(() => {
+    setGuests(initialGuests);
+  }, [initialGuests]);
 
   const handleIncrement = (type) => {
     setGuests(prev => ({

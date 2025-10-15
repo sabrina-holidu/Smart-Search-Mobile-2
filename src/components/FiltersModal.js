@@ -1,6 +1,135 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const FiltersModal = ({ isOpen, onClose, onApplyFilters }) => {
+// Mapping function to convert keywords to filter selections
+const mapKeywordsToFilters = (keywords) => {
+    const newFilters = {
+      priceRanges: [],
+      ratings: [],
+      amenities: [],
+      propertyTypes: [],
+      instantBook: false,
+      freeCancellation: false
+    };
+
+    keywords.forEach(keyword => {
+      const lowerKeyword = keyword.toLowerCase();
+
+      // Map to amenities
+      if (lowerKeyword.includes('wi-fi') || lowerKeyword.includes('wifi')) {
+        if (!newFilters.amenities.includes('Wi-Fi')) newFilters.amenities.push('Wi-Fi');
+      }
+      if (lowerKeyword.includes('parking')) {
+        if (!newFilters.amenities.includes('Parking')) newFilters.amenities.push('Parking');
+      }
+      if (lowerKeyword.includes('pool') || lowerKeyword.includes('swimming pool') || lowerKeyword.includes('private pool')) {
+        if (!newFilters.amenities.includes('Pool')) newFilters.amenities.push('Pool');
+      }
+      if (lowerKeyword.includes('kitchen')) {
+        if (!newFilters.amenities.includes('Kitchen')) newFilters.amenities.push('Kitchen');
+      }
+      if (lowerKeyword.includes('air conditioning')) {
+        if (!newFilters.amenities.includes('Air Conditioning')) newFilters.amenities.push('Air Conditioning');
+      }
+      if (lowerKeyword.includes('garden')) {
+        if (!newFilters.amenities.includes('Garden')) newFilters.amenities.push('Garden');
+      }
+      if (lowerKeyword.includes('balcony')) {
+        if (!newFilters.amenities.includes('Balcony')) newFilters.amenities.push('Balcony');
+      }
+      if (lowerKeyword.includes('terrace')) {
+        if (!newFilters.amenities.includes('Terrace')) newFilters.amenities.push('Terrace');
+      }
+      if (lowerKeyword.includes('hot tub') || lowerKeyword.includes('jacuzzi')) {
+        if (!newFilters.amenities.includes('Hot Tub')) newFilters.amenities.push('Hot Tub');
+      }
+      if (lowerKeyword.includes('gym') || lowerKeyword.includes('fitness')) {
+        if (!newFilters.amenities.includes('Gym')) newFilters.amenities.push('Gym');
+      }
+      if (lowerKeyword.includes('spa')) {
+        if (!newFilters.amenities.includes('Spa')) newFilters.amenities.push('Spa');
+      }
+      if (lowerKeyword.includes('sauna')) {
+        if (!newFilters.amenities.includes('Sauna')) newFilters.amenities.push('Sauna');
+      }
+      if (lowerKeyword.includes('fireplace')) {
+        if (!newFilters.amenities.includes('Fireplace')) newFilters.amenities.push('Fireplace');
+      }
+      if (lowerKeyword.includes('elevator')) {
+        if (!newFilters.amenities.includes('Elevator')) newFilters.amenities.push('Elevator');
+      }
+      if (lowerKeyword.includes('laundry') || lowerKeyword.includes('washing machine')) {
+        if (!newFilters.amenities.includes('Laundry')) newFilters.amenities.push('Laundry');
+      }
+      if (lowerKeyword.includes('dishwasher')) {
+        if (!newFilters.amenities.includes('Dishwasher')) newFilters.amenities.push('Dishwasher');
+      }
+      if (lowerKeyword.includes('bbq') || lowerKeyword.includes('barbecue') || lowerKeyword.includes('grill')) {
+        if (!newFilters.amenities.includes('BBQ')) newFilters.amenities.push('BBQ');
+      }
+      if (lowerKeyword.includes('outdoor dining')) {
+        if (!newFilters.amenities.includes('Outdoor Dining')) newFilters.amenities.push('Outdoor Dining');
+      }
+      if (lowerKeyword.includes('patio')) {
+        if (!newFilters.amenities.includes('Patio')) newFilters.amenities.push('Patio');
+      }
+      if (lowerKeyword.includes('deck')) {
+        if (!newFilters.amenities.includes('Deck')) newFilters.amenities.push('Deck');
+      }
+      if (lowerKeyword.includes('rooftop')) {
+        if (!newFilters.amenities.includes('Rooftop')) newFilters.amenities.push('Rooftop');
+      }
+      if (lowerKeyword.includes('beach access')) {
+        if (!newFilters.amenities.includes('Beach Access')) newFilters.amenities.push('Beach Access');
+      }
+
+      // Map to property types
+      if (lowerKeyword.includes('villa')) {
+        if (!newFilters.propertyTypes.includes('Villa')) newFilters.propertyTypes.push('Villa');
+      }
+      if (lowerKeyword.includes('apartment')) {
+        if (!newFilters.propertyTypes.includes('Apartment')) newFilters.propertyTypes.push('Apartment');
+      }
+      if (lowerKeyword.includes('hotel')) {
+        if (!newFilters.propertyTypes.includes('Hotel')) newFilters.propertyTypes.push('Hotel');
+      }
+      if (lowerKeyword.includes('house') || lowerKeyword.includes('beach house') || lowerKeyword.includes('country house')) {
+        if (!newFilters.propertyTypes.includes('House')) newFilters.propertyTypes.push('House');
+      }
+      if (lowerKeyword.includes('studio')) {
+        if (!newFilters.propertyTypes.includes('Studio')) newFilters.propertyTypes.push('Studio');
+      }
+      if (lowerKeyword.includes('loft')) {
+        if (!newFilters.propertyTypes.includes('Loft')) newFilters.propertyTypes.push('Loft');
+      }
+      if (lowerKeyword.includes('penthouse')) {
+        if (!newFilters.propertyTypes.includes('Penthouse')) newFilters.propertyTypes.push('Penthouse');
+      }
+      if (lowerKeyword.includes('cottage') || lowerKeyword.includes('cabin') || lowerKeyword.includes('chalet')) {
+        if (!newFilters.propertyTypes.includes('Cottage')) newFilters.propertyTypes.push('Cottage');
+      }
+
+      // Map to ratings
+      if (lowerKeyword.includes('5 star') || lowerKeyword.includes('5-star')) {
+        if (!newFilters.ratings.includes('5 Stars')) newFilters.ratings.push('5 Stars');
+      } else if (lowerKeyword.includes('4+ stars') || lowerKeyword.includes('highly rated') || lowerKeyword.includes('top rated')) {
+        if (!newFilters.ratings.includes('4+ Stars')) newFilters.ratings.push('4+ Stars');
+      } else if (lowerKeyword.includes('3+ stars')) {
+        if (!newFilters.ratings.includes('3+ Stars')) newFilters.ratings.push('3+ Stars');
+      }
+
+      // Map to price ranges
+      if (lowerKeyword.includes('budget') || lowerKeyword.includes('cheap') || lowerKeyword.includes('affordable')) {
+        if (!newFilters.priceRanges.includes('Under €50')) newFilters.priceRanges.push('Under €50');
+      }
+      if (lowerKeyword.includes('luxury') || lowerKeyword.includes('premium') || lowerKeyword.includes('expensive')) {
+        if (!newFilters.priceRanges.includes('€500+')) newFilters.priceRanges.push('€500+');
+      }
+    });
+
+    return newFilters;
+};
+
+const FiltersModal = ({ isOpen, onClose, onApplyFilters, extractedKeywords = [] }) => {
   const [filters, setFilters] = useState({
     priceRanges: [],
     ratings: [],
@@ -9,6 +138,14 @@ const FiltersModal = ({ isOpen, onClose, onApplyFilters }) => {
     instantBook: false,
     freeCancellation: false
   });
+
+  // Update filters when extractedKeywords change or when modal opens
+  useEffect(() => {
+    if (isOpen && extractedKeywords && extractedKeywords.length > 0) {
+      const mappedFilters = mapKeywordsToFilters(extractedKeywords);
+      setFilters(mappedFilters);
+    }
+  }, [isOpen, extractedKeywords]);
 
   const priceRanges = [
     'Under €50', '€50 - €100', '€100 - €200', '€200 - €300', '€300 - €500', '€500+'
