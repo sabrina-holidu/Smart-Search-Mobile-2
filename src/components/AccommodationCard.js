@@ -1,20 +1,6 @@
 import React from 'react';
 
 const AccommodationCard = ({ accommodation }) => {
-  const getTagColor = (tag) => {
-    switch (tag) {
-      case 'Top rated':
-        return 'bg-petrol-dark';
-      case 'Good deal':
-        return 'bg-success';
-      case 'Great views':
-        return 'bg-petrol-dark';
-      case 'Star Host':
-        return 'bg-gradient-to-r from-petrol-dark to-petrol via-petrol-dark';
-      default:
-        return 'bg-white text-error';
-    }
-  };
 
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-200">
@@ -26,16 +12,6 @@ const AccommodationCard = ({ accommodation }) => {
           className="w-full h-full object-cover"
         />
         
-        {/* Tags */}
-        {accommodation.tags.length > 0 && (
-          <div className="absolute top-3 left-3">
-            <div className={`px-2 py-1 rounded-lg ${getTagColor(accommodation.tags[0])}`}>
-              <span className="text-xs font-bold text-white">
-                {accommodation.tags[0]}
-              </span>
-            </div>
-          </div>
-        )}
         
         
         {/* Price */}
