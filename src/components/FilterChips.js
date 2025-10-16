@@ -92,7 +92,7 @@ const FilterChips = ({ keywordCount = 0, guestCount = null, extractedKeywords = 
 
   return (
     <>
-      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex gap-2 overflow-x-auto pb-2 pt-2 scrollbar-hide">
       {/* Guests Chip */}
       <div 
         className="bg-white border border-gray-300 rounded-full px-4 py-2 flex items-center gap-2 cursor-pointer hover:bg-gray-50 flex-shrink-0 whitespace-nowrap"
@@ -131,7 +131,7 @@ const FilterChips = ({ keywordCount = 0, guestCount = null, extractedKeywords = 
       
       {/* Filters Chip */}
       <div 
-        className="bg-white border border-gray-300 rounded-full px-4 py-2 flex items-center gap-2 relative cursor-pointer hover:bg-gray-50 flex-shrink-0 whitespace-nowrap"
+        className="bg-white border border-gray-300 rounded-full px-4 py-2 flex items-center gap-2 relative cursor-pointer hover:bg-gray-50 flex-shrink-0 whitespace-nowrap overflow-visible"
         onClick={handleFiltersClick}
       >
         <div className="w-5 h-5 flex-shrink-0 text-gray-800">
@@ -144,7 +144,7 @@ const FilterChips = ({ keywordCount = 0, guestCount = null, extractedKeywords = 
         
         {/* Blue bubble indicator */}
         {filterCount > 0 && (
-          <div className="absolute -top-1 -right-1 bg-[#00809d] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+          <div className="absolute -top-2 -right-2 bg-[#00809d] text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-sm">
             {filterCount}
           </div>
         )}
