@@ -435,8 +435,8 @@ const FilterModal = ({ isOpen, onClose, onApplyFilters, onKeywordCountChange, on
               </p>
             </div>
 
-            {/* Chips Container */}
-            {(extractedKeywords.length > 0 || guestCount || searchTerm) && (
+            {/* Chips Container - Only show after user clicks checkmark */}
+            {isHighlighted && (extractedKeywords.length > 0 || guestCount) && (
               <div className="flex flex-wrap gap-2 w-full">
                 {/* Guest Chip */}
                 {guestCount && (
